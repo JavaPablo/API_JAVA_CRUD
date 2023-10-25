@@ -23,8 +23,8 @@ public class UsuarioCustomQueryImpl implements UsuarioCustomQuery {
 	@PersistenceContext
 	EntityManager entityManager;
 			
-			@Autowired
-private UsuarioAssembler assembler;
+	@Autowired
+	private UsuarioAssembler assembler;
 			
 	@Override
 	public Page<UsuarioResponse> filtro(FiltroRequest filtroRequest) {
@@ -48,11 +48,6 @@ private UsuarioAssembler assembler;
 
 		return query.getResultList();
 	}
-	
-	
-	
-	
-	
 
 	private Integer filtroTotal(FiltroRequest filtroRequest) {
 		Pair<String, HashMap<String, Object>> pairSqlAndParametros = buildSqlFiltro(

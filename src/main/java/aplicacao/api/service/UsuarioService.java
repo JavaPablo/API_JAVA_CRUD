@@ -43,58 +43,20 @@ public class UsuarioService {
 	private ModelMapper modelMapper = new ModelMapper();
 
 	public UsuarioResponse salvar(UsuarioInput usuarioInput) {
-//		validacaoCadastro(usuarioInput);
 		validadores.forEach(v -> v.validar(usuarioInput));
 		Usuario usuario = assembler.toEntity(usuarioInput);
-//		Usuario usuario = modelMapper.map(input, Usuario.class);
 		usuario.setSenha(new BCryptPasswordEncoder().encode(usuarioInput.getSenha()));
 		repository.save(usuario);
 		return modelMapper.map(usuario, UsuarioResponse.class);
 	}
-	
-	
-	
-	
-	
-	
 
 	public Page<UsuarioResponse> findAll(FiltroRequest filtro) {
-		/*
-		PageRequest pageable = PageRequest.of(filtro.getPagina(), filtro.getTamanho());
-		Page<Usuario> pageuser = new PageImpl<>(new ArrayList<>());
-
-		if (filtro.getEmail() != null && filtro.getNome() != null) {
-			pageuser = repository.findByEmailAndNome(filtro.getEmail(), filtro.getNome(), pageable);
-		} else if (filtro.getEmail() != null && filtro.getNome() == null) {
-			pageuser = repository.findByEmail(filtro.getEmail(), pageable);
-		} else if (filtro.getEmail() == null && filtro.getNome() != null) {
-			pageuser = repository.findByNome(filtro.getNome(), pageable);
-		} else {
-			pageuser = repository.findAll(pageable);
-		}
-
-		List<UsuarioResponse> responses = pageuser.getContent().stream()
-				.map(user -> modelMapper.map(user, UsuarioResponse.class)).collect(Collectors.toList());
-
-		return new PageImpl<UsuarioResponse>(responses,
-				PageRequest.of(pageuser.getPageable().getPageNumber(), pageuser.getSize()), pageuser.getTotalPages())
- */
 		return repository.filtro(filtro);
 	}
-	
-	
-	
-	
-	
+
 	public UsuarioResponse buscarPorId(Long id) {
         return assembler.toModel(buscarEValidar(id));
     }
-	
-	
-	
-	
-	
-	
 	
 	public UsuarioResponse atualizar(Long id, UsuarioAtualizacaoInput  usuarioInput) {
         Usuario usuario =   buscarEValidar(id);
@@ -104,21 +66,13 @@ public class UsuarioService {
 		return modelMapper.map(usuario, UsuarioResponse.class);
     }
 	
-	
-	
-	
 	public UsuarioResponse alterarSenha(Long id, AtualizarSenhaUsuarioInput  usuarioInput) {
         Usuario usuario =   buscarEValidar(id);
 		usuario.setSenha(new BCryptPasswordEncoder().encode(usuarioInput.getSenha()));
 		repository.save(usuario);
 		return modelMapper.map(usuario, UsuarioResponse.class);   
 	}
-	
-	
-	
-	
-	
-	
+
 	 public void excluir(Long id) {
 	        Usuario usuario = buscarEValidar(id);
 	        repository.delete(usuario);
