@@ -1,0 +1,38 @@
+version: '3.5'
+services:
+  mysql-server:
+    container_name: mysql-server
+    image: mysql:5.7        
+    ports:
+       - "3306:3306"
+       - "3036:3036" 
+    restart: unless-stopped           
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: cadastro_usuario
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+      -  vl-database:/var/lib/mysql
+    networks:
+      - app-network   
+  backend-api:
+    depends_on:
+      - mysql-server
+    restart: on-failure  
+    container_name: backend-api
+    image: pablo/backend-api:latest
+    build:
+      dockerfile: ./Dockerfile   
+    ports:
+      - "8080:8080" 
+    networks:
+      - app-network
+    environment:
+      DATABASE_URL: jdbc:mysql://mysql-server:3306/cadastro_usuario
+      DATABASE_USER: root
+      DATABASE_PASSWORD: 123456
+volumes:
+  vl-database:
+networks:
+  app-network:
+     driver: bridge  
